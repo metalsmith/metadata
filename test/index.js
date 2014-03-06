@@ -4,7 +4,7 @@ var exists = require('fs').existsSync;
 var Metalsmith = require('metalsmith');
 var metadata = require('..');
 
-describe('metalsmith-drafts', function(){
+describe('metalsmith-metadata', function(){
   it('should error for malformed data', function(done){
     var m = Metalsmith('test/fixtures/malformed').use(metadata({ file: 'data.json' }));
     m.build(function(err){
