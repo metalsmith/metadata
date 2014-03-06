@@ -1,0 +1,15 @@
+{
+  "name": "metalsmith-metadata",
+  "description": "A metalsmith plugin to load global metadata from files.",
+  "repository": "git://github.com/segmentio/metalsmith-metadata.git",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "dependencies": {
+    "js-yaml": "^3.0.2"
+  },
+  "devDependencies": {
+    "mocha": "1.x",
+    "metalsmith": "^0.2.0"
+  }
+}
