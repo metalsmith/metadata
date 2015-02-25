@@ -6,10 +6,13 @@
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
-    "js-yaml": "^3.0.2"
+    "js-yaml": "^3.2.7"
   },
   "devDependencies": {
-    "mocha": "1.x",
-    "metalsmith": "^0.2.0"
+    "mocha": "^2.1.0",
+    "metalsmith": "^1.3.0"
+  },
+  "scripts": {
+    "test": "mocha"
   }
 }
