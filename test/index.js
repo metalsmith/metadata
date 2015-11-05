@@ -34,20 +34,4 @@ describe('metalsmith-metadata', function(){
       done();
     });
   });
-
-  it('should work with file paths on Windows', function(done) {
-    var
-      md = metadata({ file: 'metadata/data.yaml' }),
-      result = {};
-
-    md({
-      'metadata\\data.yaml': { contents: 'string: string' }
-    }, {
-      metadata: function () { return result; }
-    }, function (err) {
-      if (err) return done(err);
-      assert.deepEqual(result.file, { string: 'string' });
-      done();
-    });
-  });
 });
