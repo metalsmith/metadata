@@ -37,6 +37,15 @@ metalsmith.use(metadata({
 }));
 ```
 
+Note that the path is relative to the Metalsmith source directory (`src`). To use a file outside of src, pass "true" as a second argument:
+
+```js
+metalsmith.use(metadata({
+  authors: './path/to/authors.json',
+  categories: './path/to/categories.yaml'
+}, true ));
+```
+
 ## License
 
   MIT
