@@ -34,4 +34,28 @@ describe('metalsmith-metadata', function(){
       done();
     });
   });
+
+  it('should load from a normalized subdirectory path', function(done){
+    var m = Metalsmith('test/fixtures/subdir').use(metadata({ files: {file: './path/to/file/data.json'} }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/subdir/build'));
+      done();
+    });
+  });
+
+  it('should load from an external directory path', function(done){
+    var m = Metalsmith('test/fixtures/altpath').use(metadata({
+      files: { file: 'test/fixtures/altpath/data.json'},
+      config: { isExternalSrc: true }
+    }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/altpath/build'));
+      done();
+    });
+  });
+
 });
