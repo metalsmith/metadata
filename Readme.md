@@ -17,8 +17,10 @@
 {
   "plugins": {
     "metalsmith-metadata": {
-      "authors": "./path/to/authors.json",
-      "categories": "./path/to/categories.yaml"
+      "files": {
+        "authors": "./path/to/authors.json",
+        "categories": "./path/to/categories.yaml"
+      }
     }
   }
 }
@@ -32,9 +34,24 @@
 var metadata = require('metalsmith-metadata');
 
 metalsmith.use(metadata({
-  authors: './path/to/authors.json',
-  categories: './path/to/categories.yaml'
+  "files": {
+    authors: './path/to/authors.json',
+    categories: './path/to/categories.yaml'
+  }
 }));
+```
+
+Note that the path is relative to the Metalsmith source directory (`src`). To use a file outside of src, add the following configuration:
+
+```js
+metalsmith.use(metadata({
+  "files": {
+    authors: '../path/to/authors.json',
+    categories: '/abs/path/to/categories.yaml'
+  },
+  "config": {
+    isExternalSrc: true
+  }}));
 ```
 
 ## License
