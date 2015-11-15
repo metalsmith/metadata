@@ -2,7 +2,7 @@
   "name": "metalsmith-metadata",
   "description": "A metalsmith plugin to load global metadata from files.",
   "repository": "git://github.com/segmentio/metalsmith-metadata.git",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
