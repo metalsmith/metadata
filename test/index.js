@@ -25,6 +25,30 @@ describe('metalsmith-metadata', function(){
     });
   });
 
+  it('should not parse a file if the key already exists in the metadata', function(done){
+    var m = Metalsmith('test/fixtures/json')
+      .use(metadata({ file: 'data.json' }))
+      .use(metadata({ file: 'missing.json' }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/json/build'));
+      done();
+    });
+  });
+
+  it('should parse a file even if the key exists if the file is in the bundle', function(done){
+    var m = Metalsmith('test/fixtures/duplicate')
+      .use(metadata({ file: 'data.json' }))
+      .use(metadata({ file: 'data2.json' }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string2' });
+      assert(!exists('test/fixtures/json/build'));
+      done();
+    });
+  });
+
   it('should parse YAML', function(done){
     var m = Metalsmith('test/fixtures/yaml').use(metadata({ file: 'data.yaml' }));
     m.build(function(err){
