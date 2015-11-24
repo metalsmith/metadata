@@ -58,4 +58,34 @@ describe('metalsmith-metadata', function(){
       done();
     });
   });
+
+  it('should parse nested path', function(done){
+    var m = Metalsmith('test/fixtures/nested').use(metadata({ file: 'path/data.yaml' }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/nested/build'));
+      done();
+    });
+  });
+
+  it('should parse nested path with backslash', function(done){
+    var m = Metalsmith('test/fixtures/nested').use(metadata({ file: 'path\\data.yaml' }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/nested/build'));
+      done();
+    });
+  });
+
+  it('should parse deep nested path', function(done){
+    var m = Metalsmith('test/fixtures/deep-nested').use(metadata({ file: 'path/path/data.yaml' }));
+    m.build(function(err){
+      if (err) return done(err);
+      assert.deepEqual(m.metadata().file, { string: 'string' });
+      assert(!exists('test/fixtures/deep-nested/build'));
+      done();
+    });
+  });
 });
