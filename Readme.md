@@ -3,7 +3,7 @@
 
   A metalsmith plugin to load global metadata from files.
 
-  Supports `.json` and `.yaml` data.
+  Supports `.json` and `.yaml` data. Can also parse markdown in .yaml files with the .yamlmd extension, using `markdown-it`. 
 
 ## Installation
 
