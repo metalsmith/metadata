@@ -6,7 +6,9 @@
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
-    "js-yaml": "^3.2.7"
+    "js-yaml": "^3.2.7",
+    "lodash": "^4.17.4",
+    "markdown-it": "^8.3.1"
   },
   "devDependencies": {
     "mocha": "^2.1.0",
