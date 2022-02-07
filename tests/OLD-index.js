@@ -2,7 +2,7 @@
 var assert = require('assert');
 var exists = require('fs').existsSync;
 var Metalsmith = require('metalsmith');
-var metadata = require('..');
+var metadata = require('../lib');
 
 describe('metalsmith-metadata', function(){
   it('should error for malformed data', function(done){
