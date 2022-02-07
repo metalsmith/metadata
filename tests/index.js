@@ -1,17 +1,17 @@
 /* global describe, it */
 
-'use strict';
+"use strict";
 
-const chai = require('chai');
-const metalsmith = require('metalsmith');
-const mdMeta = require('../lib');
-const inplace = require('metalsmith-in-place');
-const layouts = require('@metalsmith/layouts');
-const fs = require('fs');
-const path = require('path');
+const chai = require("chai");
+const metalsmith = require("metalsmith");
+const mdMeta = require("../lib");
+const inplace = require("metalsmith-in-place");
+const layouts = require("@metalsmith/layouts");
+const fs = require("fs");
+const path = require("path");
 const expect = chai.expect;
 
-const fixture = path.resolve.bind(path, __dirname, 'fixtures');
+const fixture = path.resolve.bind(path, __dirname, "fixtures");
 
 const templateConfig = {
   engineOptions: {
@@ -20,151 +20,174 @@ const templateConfig = {
 };
 
 function file(_path) {
-  return fs.readFileSync(fixture(_path), 'utf8');
+  return fs.readFileSync(fixture(_path), "utf8");
 }
 
-describe('metalsmith-metadata', () => {
-
-  it('should parse local JSON', done => {
-
+describe("metalsmith-metadata", () => {
+  it("should parse local JSON", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           localJSON: "./data/json-test.json",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/json-test.html')).to.be.eql(file('expected/json-test.html'));
-        
+        expect(file("build/json-test.html")).to.be.eql(
+          file("expected/json-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse local YAML', done => {
-
+  it("should parse local YAML", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           localYAML: "./data/yaml-test.yaml",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/yaml-test.html')).to.be.eql(file('expected/yaml-test.html'));
-        
+        expect(file("build/yaml-test.html")).to.be.eql(
+          file("expected/yaml-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse local TOML', done => {
-
+  it("should parse local TOML", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           localTOML: "./data/toml-test.toml",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/toml-test.html')).to.be.eql(file('expected/toml-test.html'));
-        
+        expect(file("build/toml-test.html")).to.be.eql(
+          file("expected/toml-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse local files in a folder', done => {
-
+  it("should parse local files in a folder", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           localFolder: "./data/folder-test",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/local-folder-test.html')).to.be.eql(file('expected/local-folder-test.html'));
-        
+        expect(file("build/local-folder-test.html")).to.be.eql(
+          file("expected/local-folder-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse external JSON', done => {
-
+  it("should parse external JSON", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           externalJSON: "../external/ext-json-test.json",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/external-json-test.html')).to.be.eql(file('expected/external-json-test.html'));
-        
+        expect(file("build/external-json-test.html")).to.be.eql(
+          file("expected/external-json-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse external TOML', done => {
-
+  it("should parse external TOML", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           externalTOML: "../external/ext-toml-test.toml",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/external-toml-test.html')).to.be.eql(file('expected/external-toml-test.html'));
-        
+        expect(file("build/external-toml-test.html")).to.be.eql(
+          file("expected/external-toml-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse external YAML', done => {
-
+  it("should parse external YAML", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           externalYAML: "../external/ext-yaml-test.yaml",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/external-yaml-test.html')).to.be.eql(file('expected/external-yaml-test.html'));
-        
+        expect(file("build/external-yaml-test.html")).to.be.eql(
+          file("expected/external-yaml-test.html")
+        );
+
         done();
       });
   });
 
-  it('should parse files in an external folder', done => {
-
+  it("should parse files in an external folder", (done) => {
     metalsmith(fixture())
-      .use(mdMeta({
+      .use(
+        mdMeta({
           externalFolder: "../external/folder-test",
-        }))
+        })
+      )
       .use(inplace(templateConfig))
       .use(layouts(templateConfig))
-      .build( err => {
+      .build((err) => {
         if (err) {
           return done(err);
         }
-        expect(file('build/external-folder-test.html')).to.be.eql(file('expected/external-folder-test.html'));
-        
+        expect(file("build/external-folder-test.html")).to.be.eql(
+          file("expected/external-folder-test.html")
+        );
+
         done();
       });
   });
