@@ -28,7 +28,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          localJSON: "./data/json-test.json",
+          localJSON: "./src/data/json-test.json",
         })
       )
       .use(inplace(templateConfig))
@@ -49,7 +49,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          localYAML: "./data/yaml-test.yaml",
+          localYAML: "./src/data/yaml-test.yaml",
         })
       )
       .use(inplace(templateConfig))
@@ -70,7 +70,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          localTOML: "./data/toml-test.toml",
+          localTOML: "./src/data/toml-test.toml",
         })
       )
       .use(inplace(templateConfig))
@@ -91,7 +91,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          localFolder: "./data/folder-test",
+          localFolder: "./src/data/folder-test",
         })
       )
       .use(inplace(templateConfig))
@@ -112,7 +112,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          externalJSON: "../external/ext-json-test.json",
+          externalJSON: "./external/ext-json-test.json",
         })
       )
       .use(inplace(templateConfig))
@@ -133,7 +133,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          externalTOML: "../external/ext-toml-test.toml",
+          externalTOML: "./external/ext-toml-test.toml",
         })
       )
       .use(inplace(templateConfig))
@@ -154,7 +154,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          externalYAML: "../external/ext-yaml-test.yaml",
+          externalYAML: "./external/ext-yaml-test.yaml",
         })
       )
       .use(inplace(templateConfig))
@@ -175,7 +175,7 @@ describe("metalsmith-metadata", () => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          externalFolder: "../external/folder-test",
+          externalFolder: "./external/folder-test",
         })
       )
       .use(inplace(templateConfig))
