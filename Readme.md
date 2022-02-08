@@ -6,7 +6,7 @@ A metalsmith plugin to load global metadata from files and directories.
 [![npm: version][npm-badge]][npm-url]
 [![travis: build][ci-badge]][ci-url]
 [![code coverage][codecov-badge]][codecov-url]
-[![license: LGPL-3.0][license-badge]][license-url]
+[![license: MIT][license-badge]][license-url]
 
 - Files and directories must be located in the metalsmith root directory.
 - Supports JSON, YAML and TOML files
