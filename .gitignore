@@ -11,3 +11,7 @@ npm-debug.log*
 **/build
 coverage.info
 .nyc_output
+
+# other
+.DS_Store
+.idea
