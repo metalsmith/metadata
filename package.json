@@ -1,5 +1,5 @@
 {
-  "name": "metalsmith-metadata",
+  "name": "@metalsmith/metadata",
   "description": "A metalsmith plugin to load global metadata from files.",
   "keywords": [
     "metalsmith-plugin",

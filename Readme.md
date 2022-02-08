@@ -1,4 +1,4 @@
-# metalsmith-metadata
+# @metalsmith/metadata"
 
 A metalsmith plugin to load global metadata from files and directories.
 
