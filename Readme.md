@@ -1,5 +1,11 @@
 # @metalsmith/metadata
 
+[![metalsmith: plugin][metalsmith-badge]][metalsmith-url]
+[![npm: version][npm-badge]][npm-url]
+[![travis: build][ci-badge]][ci-url]
+[![code coverage][codecov-badge]][codecov-url]
+[![license: LGPL-3.0][license-badge]][license-url]
+
 A metalsmith plugin to load global metadata from files and directories.
 
 - Files and directories must be located in the metalsmith root directory.
@@ -192,3 +198,14 @@ aDirectory: [
 ## License
 
 MIT
+
+[npm-badge]: https://img.shields.io/npm/v/@metalsmith/metadata.svg
+[npm-url]: https://www.npmjs.com/package/@metalsmith/metadata
+[ci-badge]: https://app.travis-ci.com/metalsmith/metadata.svg?branch=master
+[ci-url]: https://app.travis-ci.com/github/metalsmith/metadata
+[metalsmith-badge]: https://img.shields.io/badge/metalsmith-core_plugin-green.svg?longCache=true
+[metalsmith-url]: https://metalsmith.io
+[codecov-badge]: https://img.shields.io/coveralls/github/metalsmith/metadata
+[codecov-url]: https://coveralls.io/github/metalsmith/metadata
+[license-badge]: https://img.shields.io/github/license/metalsmith/metadata
+[license-url]: LICENSE
