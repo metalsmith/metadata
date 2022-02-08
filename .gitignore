@@ -1,1 +1,13 @@
+# NPM
 node_modules
+npm-debug.log*
+.npm
+*.tgz
+
+# ESLint Cache
+.eslintcache
+
+# tests
+**/build
+coverage.info
+.nyc_output
