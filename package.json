@@ -15,6 +15,11 @@
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
+    "metalsmith": "^2.4.1",
+    "@metalsmith/layouts": "^2.4.0",
+    "metalsmith-in-place": "^4.4.0",
+    "jstransformer-markdown": "^1.2.1",
+    "jstransformer-nunjucks": "^0.5.0",
     "js-yaml": "^4.1.0",
     "toml": "^3.0.0"
   },
@@ -24,11 +29,6 @@
     "coveralls": "^3.1.1",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
-    "metalsmith": "^2.4.1",
-    "@metalsmith/layouts": "^2.4.0",
-    "metalsmith-in-place": "^4.4.0",
-    "jstransformer-markdown": "^1.2.1",
-    "jstransformer-nunjucks": "^0.5.0",
     "mocha": "^9.2.0",
     "prettier": "^2.5.1"
   },
