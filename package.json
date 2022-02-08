@@ -15,32 +15,34 @@
   "license": "MIT",
   "main": "lib/index.js",
   "dependencies": {
-    "metalsmith": "^2.4.1",
-    "@metalsmith/layouts": "^2.4.0",
-    "metalsmith-in-place": "^4.4.0",
-    "jstransformer-markdown": "^1.2.1",
-    "jstransformer-nunjucks": "^0.5.0",
+    "debug": "^4.3.3",
     "js-yaml": "^4.1.0",
     "toml": "^3.0.0"
   },
   "devDependencies": {
+    "@metalsmith/layouts": "^2.4.0",
     "auto-changelog": "^2.3.0",
     "chai": "^4.3.6",
     "coveralls": "^3.1.1",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
+    "jstransformer-markdown": "^1.2.1",
+    "jstransformer-nunjucks": "^0.5.0",
+    "metalsmith": "^2.4.1",
+    "metalsmith-in-place": "^4.4.0",
     "mocha": "^9.2.0",
+    "nyc": "^15.1.0",
     "prettier": "^2.5.1"
   },
   "peerDependencies": {
-    "metalsmith": "^2.3.0"
+    "metalsmith": "^2.4.1"
   },
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
     "format": "prettier --write \"**/*.{yml,md,js,json}\"",
     "lint": "eslint --cache --fix-dry-run .",
     "release": "release-it .",
-    "test": "mocha ./tests/index.js"
+    "test": "nyc mocha ./tests/index.js"
   },
   "engines": {
     "node": ">=8"

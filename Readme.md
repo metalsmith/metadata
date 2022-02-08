@@ -1,12 +1,12 @@
 # @metalsmith/metadata
 
+A metalsmith plugin to load global metadata from files and directories.
+
 [![metalsmith: plugin][metalsmith-badge]][metalsmith-url]
 [![npm: version][npm-badge]][npm-url]
 [![travis: build][ci-badge]][ci-url]
 [![code coverage][codecov-badge]][codecov-url]
 [![license: LGPL-3.0][license-badge]][license-url]
-
-A metalsmith plugin to load global metadata from files and directories.
 
 - Files and directories must be located in the metalsmith root directory.
 - Supports JSON, YAML and TOML files
@@ -20,28 +20,12 @@ A metalsmith plugin to load global metadata from files and directories.
 $ npm install metalsmith-metadata
 ```
 
-## CLI Usage
-
-Install via npm and then add the `metalsmith-metadata` key to your `metalsmith.json` plugins. Each key in the dictionary of options will be the key for the global metadata object, like so:
-
-```json
-{
-  "plugins": {
-    "metalsmith-metadata": {
-      "authors": "./path/to/authors.json",
-      "categories": "./path/to/categories.yaml",
-      "customers": "./path/to/directory/with/customer/files"
-    }
-  }
-}
-```
-
-## Javascript Usage
+## Usage
 
 Pass the options to `Metalsmith#use`. **File/directory paths are referencing the Metalsmith root directory**.
 
 ```js
-const metadata = require("metalsmith-metadata");
+const metadata = require("@metalsmith/metadata");
 
 metalsmith.use(
   metadata({
@@ -194,6 +178,38 @@ aDirectory: [
     { title: 'Sem Venenatis Tortor' }
   ],
 ```
+
+## Debug
+To enable debug logs, set the `DEBUG` environment variable to `@metalsmith/metadata`:
+
+Linux/Mac:
+
+```bash
+DEBUG=@metalsmith/metadata
+```
+
+Windows:
+
+```batch
+set "DEBUG=@metalsmith/metadata"
+```
+
+## CLI Usage
+
+To use this plugin with the Metalsmith CLI,add the `@metalsmith/metadata` key to your `metalsmith.json` plugins. Each key in the dictionary of options will be the key for the global metadata object, like so:
+
+```json
+{
+  "plugins": {
+    "@metalsmith/metadata": {
+      "authors": "./path/to/authors.json",
+      "categories": "./path/to/categories.yaml",
+      "customers": "./path/to/directory/with/customer/files"
+    }
+  }
+}
+```
+
 
 ## License
 
