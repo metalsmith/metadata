@@ -9,6 +9,7 @@ A metalsmith plugin to load global metadata from files and directories.
 **Metadata must be included above metalsmith-layouts and metalsmith-in-place and other plugins that use metadata.**
 
 ## Installation
+
 ```bash
 $ npm install metalsmith-metadata
 ```
@@ -23,11 +24,12 @@ Install via npm and then add the `metalsmith-metadata` key to your `metalsmith.j
     "metalsmith-metadata": {
       "authors": "./path/to/authors.json",
       "categories": "./path/to/categories.yaml",
-      "customers": "./path/to/directory/with/customer/files",
+      "customers": "./path/to/directory/with/customer/files"
     }
   }
 }
 ```
+
 ## Javascript Usage
 
 Pass the options to `Metalsmith#use`. **File/directory paths are referencing the Metalsmith root directory**.
@@ -43,10 +45,13 @@ metalsmith.use(
   })
 );
 ```
+
 > **Note**: In the example above the first option `jsonFile` is located in the Metalsmith source directory. The following two options are located in some directory in the Metalsmith root.
 
 ## Examples
+
 ### a-json-file.json
+
 ```
 [
   {
@@ -60,15 +65,19 @@ metalsmith.use(
   }
 ]
 ```
+
 will be available in the metadata like this:
+
 ```js
 jsonFile: [
-    { title: 'Nibh Justo Sit Dolor' },
-    { title: 'Venenatis Consectetur' },
-    { title: 'Tortor Mattis Amet Ullamcorper' }
-  ]
+  { title: "Nibh Justo Sit Dolor" },
+  { title: "Venenatis Consectetur" },
+  { title: "Tortor Mattis Amet Ullamcorper" },
+];
 ```
+
 ### a-yaml-file.yaml (or a-yaml-file.yml)
+
 ```yaml
 title: "Local YAML test file"
 Dolorfusce:
@@ -78,7 +87,9 @@ Dolorfusce:
     - "Euismod"
     - "Quam Ipsum"
 ```
+
 will be available in the metadata like this:
+
 ```js
 yamlTest: {
   title: 'Local YAML test file',
@@ -89,7 +100,9 @@ yamlTest: {
   }
 }
 ```
+
 ### a-toml-file.toml
+
 ```toml
 # This is a TOML document
 
@@ -116,7 +129,9 @@ ip = "10.0.0.2"
 role = "backend"
 
 ```
+
 will be available in the metadata like this:
+
 ```js
 tomlTest: {
   title: 'Local TOML test file',
@@ -132,6 +147,7 @@ tomlTest: {
 ```
 
 ### Directory with files
+
 ```
 a-directory
   - file1.json
@@ -140,24 +156,31 @@ a-directory
 ```
 
 ### file1.json
+
 ```
 {
     "title": "Fringilla Etiam Sollicitudin"
 }
 ```
+
 ### file2.json
+
 ```
 {
     "title": "Pharetra Egestas Mollis"
 }
 ```
+
 ### file3.json
+
 ```
 {
     "title": "Sem Venenatis Tortor"
 }
 ```
+
 will be available in the metadata like this:
+
 ```js
 aDirectory: [
     { title: 'Fringilla Etiam Sollicitudin' },
