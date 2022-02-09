@@ -1,0 +1,7 @@
+title: "Folder YAML test file"
+Dolorfusce:
+  Curabitur: "blandit tempus"
+  Porttitor: "More Voodoo"
+  Purus:
+    - "Euismod"
+    - "Quam Ipsum"

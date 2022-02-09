@@ -87,7 +87,7 @@ describe("metalsmith-metadata", () => {
       });
   });
 
-  it("should parse local files in a folder", (done) => {
+  it("should parse local JSON files in a folder", (done) => {
     metalsmith(fixture())
       .use(
         mdMeta({
@@ -107,6 +107,28 @@ describe("metalsmith-metadata", () => {
         done();
       });
   });
+
+  it("should parse local JSON, YAML and TOML files in a folder", (done) => {
+    metalsmith(fixture())
+      .use(
+        mdMeta({
+          localYAMLFolder: "./src/data/folder-mixed-files-test",
+        })
+      )
+      .use(inplace(templateConfig))
+      .use(layouts(templateConfig))
+      .build((err) => {
+        if (err) {
+          return done(err);
+        }
+        expect(file("build/local-yaml-folder-test.html")).to.be.eql(
+          file("expected/local-yaml-folder-test.html")
+        );
+
+        done();
+      });
+  });
+
 
   it("should parse external JSON", (done) => {
     metalsmith(fixture())
