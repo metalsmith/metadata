@@ -102,7 +102,7 @@ describe('metalsmith-metadata', () => {
       });
   });
 
-  it('should parse local JSON, YAML and TOML files in a folder', (done) => {
+  it('should parse JSON, YAML, YML and TOML files in a local folder', (done) => {
     metalsmith(fixture())
       .use(
         mdMeta({
@@ -201,6 +201,27 @@ describe('metalsmith-metadata', () => {
         }
         expect(file('build/external-folder-test.html')).to.be.eql(
           file('expected/external-folder-test.html')
+        );
+
+        done();
+      });
+  });
+
+  it('should parse JSON, YAML, YML and TOML files in an external folder', (done) => {
+    metalsmith(fixture())
+      .use(
+        mdMeta({
+          externalMixedFolder: './external/folder-mixed-files-test'
+        })
+      )
+      .use(inplace(templateConfig))
+      .use(layouts(templateConfig))
+      .build((err) => {
+        if (err) {
+          return done(err);
+        }
+        expect(file('build/external-mixed-folder-test.html')).to.be.eql(
+          file('expected/external-mixed-folder-test.html')
         );
 
         done();
