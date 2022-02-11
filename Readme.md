@@ -25,13 +25,13 @@ $ npm install metalsmith-metadata
 Pass the options to `Metalsmith#use`. **File/directory paths are referencing the Metalsmith root directory**.
 
 ```js
-const metadata = require("@metalsmith/metadata");
+const metadata = require('@metalsmith/metadata');
 
 metalsmith.use(
   metadata({
-    jsonFile: "./src/data/a-json-file.json",
-    yamlFile: "./some-directory/a-yaml-file.yaml",
-    aDirectory: "./some-directory/a-directory",
+    jsonFile: './src/data/a-json-file.json',
+    yamlFile: './some-directory/a-yaml-file.yaml',
+    aDirectory: './some-directory/a-directory'
   })
 );
 ```
@@ -60,22 +60,22 @@ will be available in the metadata like this:
 
 ```js
 jsonFile: [
-  { title: "Nibh Justo Sit Dolor" },
-  { title: "Venenatis Consectetur" },
-  { title: "Tortor Mattis Amet Ullamcorper" },
+  { title: 'Nibh Justo Sit Dolor' },
+  { title: 'Venenatis Consectetur' },
+  { title: 'Tortor Mattis Amet Ullamcorper' }
 ];
 ```
 
 ### a-yaml-file.yaml (or a-yaml-file.yml)
 
 ```yaml
-title: "Local YAML test file"
+title: 'Local YAML test file'
 Dolorfusce:
-  Curabitur: "blandit tempus"
-  Porttitor: "More Voodoo"
+  Curabitur: 'blandit tempus'
+  Porttitor: 'More Voodoo'
   Purus:
-    - "Euismod"
-    - "Quam Ipsum"
+    - 'Euismod'
+    - 'Quam Ipsum'
 ```
 
 will be available in the metadata like this:
@@ -180,6 +180,7 @@ aDirectory: [
 ```
 
 ## Debug
+
 To enable debug logs, set the `DEBUG` environment variable to `@metalsmith/metadata`:
 
 Linux/Mac:
@@ -209,7 +210,6 @@ To use this plugin with the Metalsmith CLI,add the `@metalsmith/metadata` key to
   }
 }
 ```
-
 
 ## License
 
