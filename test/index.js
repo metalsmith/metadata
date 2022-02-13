@@ -4,7 +4,7 @@
 
 const chai = require('chai');
 const metalsmith = require('metalsmith');
-const { name } = require('../package.json')
+const { name } = require('../package.json');
 const mdMeta = require('../lib');
 const inplace = require('metalsmith-in-place');
 const layouts = require('@metalsmith/layouts');
@@ -27,38 +27,40 @@ function file(_path) {
 
 describe('@metalsmith/metadata', () => {
   it('should export a named plugin function matching package.json name', function () {
-    const namechars = name.split('/')[1]
+    const namechars = name.split('/')[1];
     const camelCased = namechars.split('').reduce((str, char, i) => {
-      str += namechars[i - 1] === '-' ? char.toUpperCase() : char === '-' ? '' : char
-      return str
-    }, '')
-    assert.strictEqual(mdMeta().name, camelCased)
-  })
+      str += namechars[i - 1] === '-' ? char.toUpperCase() : char === '-' ? '' : char;
+      return str;
+    }, '');
+    assert.strictEqual(mdMeta().name, camelCased);
+  });
 
   it('should not crash the metalsmith build when using default options', function (done) {
     metalsmith(fixture('default'))
       .use(mdMeta())
       .build((err) => {
-        assert.strictEqual(err, null)
-        equals(fixture('default/build'), fixture('default/expected'))
-        done()
-      })
-  })
-
-  it('should parse local JSON', (done) => {
-    const ms = metalsmith(fixture())
-    const sourceFilePath = './src/data/json-test.json'
-    ms.use(
-        mdMeta({
-          localJSON: sourceFilePath
-        })
-      )
-      .process((err) => {
-        if (err) done(err)
-        console.log(ms.metadata())
-        assert.deepStrictEqual(ms.metadata().localJSON, JSON.parse(fs.readFileSync(fixture(sourceFilePath))))
+        assert.strictEqual(err, null);
+        equals(fixture('default/build'), fixture('default/expected'));
         done();
       });
+  });
+
+  it('should parse local JSON', (done) => {
+    const ms = metalsmith(fixture());
+    const sourceFilePath = './src/data/json-test.json';
+    ms.use(
+      mdMeta({
+        localJSON: sourceFilePath
+      })
+    ).process((err) => {
+      if (err) done(err);
+      console.log(ms.metadata());
+      assert.deepStrictEqual(
+        ms.metadata().localJSON,
+        JSON.parse(fs.readFileSync(fixture(sourceFilePath)))
+      );
+      done();
+    });
   });
 
   it('should parse local YAML', (done) => {
