@@ -26,48 +26,53 @@ function file(_path) {
 }
 
 describe('@metalsmith/metadata', () => {
+
   it('should export a named plugin function matching package.json name', function () {
     const namechars = name.split('/')[1];
     const camelCased = namechars.split('').reduce((str, char, i) => {
       str += namechars[i - 1] === '-' ? char.toUpperCase() : char === '-' ? '' : char;
       return str;
     }, '');
-    assert.strictEqual(mdMeta().name, camelCased);
+    expect(mdMeta().name).to.be.eql(camelCased);
   });
-
+/*
   it('should not crash the metalsmith build when using default options', function (done) {
-    metalsmith(fixture('default'))
+    metalsmith(fixture())
+      .ignore('data')
+      .clean(true)
       .use(mdMeta())
       .build((err) => {
-        assert.strictEqual(err, null);
-        equals(fixture('default/build'), fixture('default/expected'));
+        //assert.strictEqual(err, null);
+        //equals(fixture('build'), fixture('expected'));
+        expect(fixture('build')).to.be.eql(fixture('expected'));
         done();
       });
   });
-
+*/
   it('should parse local JSON', (done) => {
-    const ms = metalsmith(fixture());
-    const sourceFilePath = './src/data/json-test.json';
-    ms.use(
-      mdMeta({
-        localJSON: sourceFilePath
-      })
-    ).process((err) => {
-      if (err) done(err);
-      console.log(ms.metadata());
-      assert.deepStrictEqual(
-        ms.metadata().localJSON,
-        JSON.parse(fs.readFileSync(fixture(sourceFilePath)))
-      );
-      done();
-    });
+    metalsmith(fixture())
+      .use(
+        mdMeta({
+          localJSON: './src/data/json-test.json'
+        })
+      )
+      .use(inplace(templateConfig))
+      .use(layouts(templateConfig))
+      .build((err) => {
+        if (err) {
+          return done(err);
+        }
+        expect(file('build/json-test.html')).to.be.eql(file('expected/json-test.html'));
+
+        done();
+      });
   });
 
   it('should parse local YAML', (done) => {
     metalsmith(fixture())
       .use(
         mdMeta({
-          localYAML: 'src/data/yaml-test.yaml'
+          localYAML: './src/data/yaml-test.yaml'
         })
       )
       .use(inplace(templateConfig))
@@ -246,5 +251,5 @@ describe('@metalsmith/metadata', () => {
 
         done();
       });
-  }); 
+  });
 });
