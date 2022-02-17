@@ -186,7 +186,7 @@ describe('metalsmith-metadata', () => {
         done();
       });
   });
-/*
+
   it('should parse files in an external folder', (done) => {
     metalsmith(fixture())
       .use(
@@ -228,5 +228,4 @@ describe('metalsmith-metadata', () => {
         done();
       });
   }); 
-*/
 });
