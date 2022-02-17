@@ -16,8 +16,16 @@ A metalsmith plugin to load global metadata from files and directories.
 
 ## Installation
 
+NPM:
+
 ```bash
-$ npm install metalsmith-metadata
+npm install @metalsmith/metadata
+```
+
+Yarn:
+
+```bash
+yarn add @metalsmith/metadata
 ```
 
 ## Usage

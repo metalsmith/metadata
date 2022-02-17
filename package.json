@@ -1,6 +1,7 @@
 {
   "name": "@metalsmith/metadata",
   "description": "A metalsmith plugin to load global metadata from files.",
+  "homepage": "https://github.com/metalsmith/metadata#readme",
   "keywords": [
     "metalsmith-plugin",
     "metalsmith",
@@ -9,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wernerglinka/metalsmith-metadata.git"
+    "url": "git+https://github.com/metalsmith/metadata.git"
   },
   "version": "1.0.0",
   "license": "MIT",
@@ -23,9 +24,10 @@
     "@metalsmith/layouts": "^2.4.0",
     "auto-changelog": "^2.3.0",
     "chai": "^4.3.6",
-    "coveralls": "^3.1.1",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-node": "^11.1.0",
     "jstransformer-markdown": "^1.2.1",
     "jstransformer-nunjucks": "^0.5.0",
     "metalsmith": "^2.4.1",
@@ -41,12 +43,14 @@
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
     "format": "prettier --write \"**/*.{yml,md,js,json}\"",
-    "lint": "eslint --cache --fix-dry-run .",
+    "format:check": "prettier --list-different \"**/*.{yml,md,js,json}\"",
+    "lint": "eslint --cache --fix .",
+    "lint:check": "eslint --cache --fix-dry-run .",
     "release": "release-it .",
-    "test": "nyc mocha ./tests/index.js"
+    "test": "nyc mocha -t 5000"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=12"
   },
   "publishConfig": {
     "access": "public"
