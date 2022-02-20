@@ -37,9 +37,9 @@ const metadata = require('@metalsmith/metadata');
 
 metalsmith.use(
   metadata({
-    jsonFile: './src/data/a-json-file.json',
-    yamlFile: './some-directory/a-yaml-file.yaml',
-    aDirectory: './some-directory/a-directory'
+    jsonFile: 'src/data/a-json-file.json',
+    yamlFile: 'some-directory/a-yaml-file.yaml',
+    aDirectory: 'some-directory/a-directory'
   })
 );
 ```
@@ -211,9 +211,9 @@ To use this plugin with the Metalsmith CLI,add the `@metalsmith/metadata` key to
 {
   "plugins": {
     "@metalsmith/metadata": {
-      "authors": "./path/to/authors.json",
-      "categories": "./path/to/categories.yaml",
-      "customers": "./path/to/directory/with/customer/files"
+      "authors": "path/to/authors.json",
+      "categories": "path/to/categories.yaml",
+      "customers": "path/to/directory/with/customer/files"
     }
   }
 }
