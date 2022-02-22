@@ -1,6 +1,6 @@
 {
   "name": "@metalsmith/metadata",
-  "description": "A metalsmith plugin to load global metadata from files.",
+  "description": "A metalsmith plugin to load global metadata from files and directories",
   "homepage": "https://github.com/metalsmith/metadata#readme",
   "keywords": [
     "metalsmith-plugin",
@@ -17,28 +17,30 @@
   "main": "lib/index.js",
   "dependencies": {
     "debug": "^4.3.3",
-    "js-yaml": "^4.1.0",
-    "toml": "^3.0.0"
+    "deepmerge": "^4.2.2",
+    "js-yaml": "^4.1.0"
   },
   "devDependencies": {
     "@metalsmith/layouts": "^2.4.0",
     "auto-changelog": "^2.3.0",
-    "chai": "^4.3.6",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-node": "^11.1.0",
-    "jstransformer-markdown": "^1.2.1",
-    "jstransformer-nunjucks": "^0.5.0",
     "metalsmith": "^2.4.1",
-    "metalsmith-in-place": "^4.4.0",
     "mocha": "^9.2.0",
     "nyc": "^15.1.0",
     "prettier": "^2.5.1",
     "release-it": "^14.12.4"
   },
   "peerDependencies": {
-    "metalsmith": "^2.4.1"
+    "metalsmith": "^2.4.1",
+    "toml": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "toml": {
+      "optional": true
+    }
   },
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",

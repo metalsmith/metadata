@@ -1,255 +1,212 @@
-/* eslint-disable */
+/* eslint-disable node/no-unpublished-require */
 
-'use strict';
+const assert = require('assert')
+const { it, describe } = require('mocha')
+const Metalsmith = require('metalsmith')
+const metadata = require('../lib')
 
-const chai = require('chai');
-const metalsmith = require('metalsmith');
-const { name } = require('../package.json');
-const mdMeta = require('../lib');
-const inplace = require('metalsmith-in-place');
-const layouts = require('@metalsmith/layouts');
-const fs = require('fs');
-const path = require('path');
-const assert = require('assert');
-const expect = chai.expect;
+describe('@metalsmith/metadata', function () {
+  it('should parse JSON', function (done) {
+    const m = Metalsmith('test/fixtures/json').use(metadata({ file: 'src/data.json' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
 
-const fixture = path.resolve.bind(path, __dirname, 'fixtures');
+  it('should parse YAML', function (done) {
+    const m = Metalsmith('test/fixtures/yaml').use(metadata({ file: 'src/data.yaml' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
 
-const templateConfig = {
-  engineOptions: {
-    path: [`${fixture()}/layouts`]
-  }
-};
+  it('should parse TOML', function (done) {
+    const m = Metalsmith('test/fixtures/toml').use(metadata({ file: 'src/data.toml' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
 
-function file(_path) {
-  return fs.readFileSync(fixture(_path), 'utf8');
-}
+  it('should resolve relative paths to metalsmith.directory()', function(done) {
+    const m = Metalsmith('test/fixtures/yaml').use(metadata({ file: './src/data.yaml' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
 
-describe('@metalsmith/metadata', () => {
+  it('should resolve absolute paths to metalsmith.directory()', function(done) {
+    const m = Metalsmith('test/fixtures/yaml')
+    m.use(metadata({ file: m.directory() + '/src/data.yaml' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
 
-  it('should export a named plugin function matching package.json name', function () {
-    const namechars = name.split('/')[1];
-    const camelCased = namechars.split('').reduce((str, char, i) => {
-      str += namechars[i - 1] === '-' ? char.toUpperCase() : char === '-' ? '' : char;
-      return str;
-    }, '');
-    expect(mdMeta().name).to.be.eql(camelCased);
-  });
-/*
-  it('should not crash the metalsmith build when using default options', function (done) {
-    metalsmith(fixture())
-      .ignore('data')
-      .clean(true)
-      .use(mdMeta())
-      .build((err) => {
-        //assert.strictEqual(err, null);
-        //equals(fixture('build'), fixture('expected'));
-        expect(fixture('build')).to.be.eql(fixture('expected'));
-        done();
-      });
-  });
-*/
-  it('should parse local JSON', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          localJSON: 'src/data/json-test.json'
-        })
+  it('should parse a file even if the key exists if the file is in the bundle', function (done) {
+    const m = Metalsmith('test/fixtures/duplicate')
+      .use(metadata({ file: 'src/data.json' }))
+      .use(metadata({ file: 'src/data2.json' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string2' })
+      done()
+    })
+  })
+
+  it('should parse nested path', function (done) {
+    const m = Metalsmith('test/fixtures/nested').use(metadata({ file: 'src/path/data.yaml' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
+
+  it('should parse deep nested path', function (done) {
+    const m = Metalsmith('test/fixtures/deep-nested').use(
+      metadata({ file: 'src/path/path/data.yaml' })
+    )
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+      done()
+    })
+  })
+
+  it('should allow merging files into an array', function (done) {
+    const m = Metalsmith('test/fixtures/array-merge').use(
+      metadata({ arr: 'src/metadata' })
+    )
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().arr, [{ id: 1 }, { id: 2 }])
+      done()
+    })
+  })
+
+  it('should allow merging files into a nested object', function (done) {
+    const m = Metalsmith('test/fixtures/object-merge').use(
+      metadata({ config: 'src/metadata' })
+    )
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().config, { metatags: [{"name": "description", "value": "Hello world"}], navitems: [{ "uri": "/", "label": "Home" },{ "uri": "/about", "label": "About" }] })
+      done()
+    })
+  })
+
+  it('should allow merging metadata into a nested keypath', function (done) {
+    const m = Metalsmith('test/fixtures/nested-keypath').use(
+      metadata({ 'config.metadata': 'src/metadata.yml' })
+    )
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().config, { metadata: {string: 'string'}})
+      done()
+    })
+  })
+
+  it('should support nested directories through multiple entries', function (done) {
+    const m = Metalsmith('test/fixtures/nested-directories').use(
+      metadata({
+        'config.metadata.extra': 'data',
+        'config.metadata.extra.yaml': 'data/nested'
+      })
+    )
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().config, { metadata: { extra: { json: 'string', yaml: { bool: true }}}})
+      done()
+    })
+  })
+
+  describe('External metadata', function() {
+    it('should add an external file to metadata', function (done) {
+      const m = Metalsmith('test/fixtures/external-file').use(
+        metadata({ data: 'data/test.json' })
       )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/json-test.html')).to.be.eql(file('expected/json-test.html'));
+      m.build(function (err) {
+        if (err) return done(err)
+        assert.deepStrictEqual(m.metadata().data, { json: 'string' })
+        done()
+      })
+    })
 
-        done();
-      });
-  });
-
-  it('should parse local YAML', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          localYAML: 'src/data/yaml-test.yaml'
-        })
+    it('should add all external files in a folder', function (done) {
+      const m = Metalsmith('test/fixtures/external-folder').use(
+        metadata({ data: 'data' })
       )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/yaml-test.html')).to.be.eql(file('expected/yaml-test.html'));
+      m.build(function (err) {
+        if (err) return done(err)
+        assert.deepStrictEqual(m.metadata().data, { json: 'string', yaml: { bool: true }})
+        done()
+      })
+    })
+  })
 
-        done();
-      });
-  });
-
-  it('should parse local TOML', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          localTOML: 'src/data/toml-test.toml'
+  describe('Error handling', function () {
+    it('should error for unsupported extensions', function (done) {
+      Metalsmith('test/fixtures/unsupported-ext')
+        .use(metadata({ file: 'src/data.txt' }))
+        .build(function (err) {
+          assert(err)
+          assert(err.message.startsWith('unsupported data format'))
+          done()
         })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/toml-test.html')).to.be.eql(file('expected/toml-test.html'));
+    })
 
-        done();
-      });
-  });
-
-  it('should parse local JSON files in a folder', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          localFolder: 'src/data/folder-test'
+    it('should error when TOML is not installed', function (done) {
+      // run this test locally by removing it.skip & running "npm remove toml"
+      it.skip()
+      const Metalsmith = require('metalsmith')
+      Metalsmith('test/fixtures/toml')
+        .use(metadata({ file: 'src/data.toml' }))
+        .build(function (err) {
+          if (!err) done(new Error('No error was thrown'))
+          assert(err)
+          assert(err.message.startsWith('To use toml you must install it first'))
+          done()
         })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/local-folder-test.html')).to.be.eql(
-          file('expected/local-folder-test.html')
-        );
+    })
 
-        done();
-      });
-  });
-
-  it('should parse JSON, YAML, YML and TOML files in a local folder', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          localMixedFolder: 'src/data/folder-mixed-files-test'
+    it('should error for malformed data', function (done) {
+      Metalsmith('test/fixtures/malformed')
+        .use(metadata({ file: 'src/data.json' }))
+        .build(function (err) {
+          if (!err) done(new Error('No error was thrown'))
+          assert(err.message.startsWith('malformed data'))
+          done()
         })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/local-mixed-folder-test.html')).to.be.eql(
-          file('expected/local-mixed-folder-test.html')
-        );
+    })
 
-        done();
-      });
-  });
-
-  it('should parse external JSON', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          externalJSON: 'external/ext-json-test.json'
+    it('should error for single-file entries that are not found', function (done) {
+      Metalsmith('test/fixtures/incorrect-path')
+        .use(metadata({ file: 'src/data-incorrect.json' }))
+        .build(function (err) {
+          if (!err) done(new Error('No error was thrown'))
+          assert(err.message.startsWith('No matching file found for entry'))
+          done()
         })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/external-json-test.html')).to.be.eql(
-          file('expected/external-json-test.html')
-        );
+    })
 
-        done();
-      });
-  });
-
-  it('should parse external TOML', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          externalTOML: 'external/ext-toml-test.toml'
+    it('should error for single-file entries that are not found (outside source dir)', function (done) {
+      Metalsmith('test/fixtures/incorrect-path')
+        .use(metadata({ file: 'data-incorrect.json' }))
+        .build(function (err) {
+          if (!err) done(new Error('No error was thrown'))
+          assert(err.message.startsWith('No matching file found for entry'))
+          done()
         })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/external-toml-test.html')).to.be.eql(
-          file('expected/external-toml-test.html')
-        );
-
-        done();
-      });
-  });
-
-  it('should parse external YAML', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          externalYAML: 'external/ext-yaml-test.yaml'
-        })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/external-yaml-test.html')).to.be.eql(
-          file('expected/external-yaml-test.html')
-        );
-
-        done();
-      });
-  });
-
-  it('should parse files in an external folder', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          externalFolder: 'external/folder-test'
-        })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/external-folder-test.html')).to.be.eql(
-          file('expected/external-folder-test.html')
-        );
-
-        done();
-      });
-  });
-
-  it('should parse JSON, YAML, YML and TOML files in an external folder', (done) => {
-    metalsmith(fixture())
-      .use(
-        mdMeta({
-          externalMixedFolder: 'external/folder-mixed-files-test'
-        })
-      )
-      .use(inplace(templateConfig))
-      .use(layouts(templateConfig))
-      .build((err) => {
-        if (err) {
-          return done(err);
-        }
-        expect(file('build/external-mixed-folder-test.html')).to.be.eql(
-          file('expected/external-mixed-folder-test.html')
-        );
-
-        done();
-      });
-  });
-});
+    })
+  })
+})

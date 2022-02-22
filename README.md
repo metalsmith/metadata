@@ -8,11 +8,10 @@ A metalsmith plugin to load global metadata from files and directories.
 [![code coverage][codecov-badge]][codecov-url]
 [![license: MIT][license-badge]][license-url]
 
-- Files and directories must be located in the metalsmith root directory.
-- Supports JSON, YAML and TOML files
-- Content of files in directories will be concatenated into a single metadata object
+- Reads, parses and merges data files into global metadata and removes them from the build (when applicable).
+- Supports JSON, YAML and TOML files. [TOML parser](https://www.npmjs.com/package/toml) needs to be installed separately.
+- Supports dot-notated metadata keypath targets as option keys, eg `{'config.nav': 'src/config/nav.yml'}`
 
-**Metadata must be included above metalsmith-layouts and metalsmith-in-place and other plugins that use metadata.**
 
 ## Installation
 
@@ -30,161 +29,115 @@ yarn add @metalsmith/metadata
 
 ## Usage
 
-Pass the options to `Metalsmith#use`. **File/directory paths are referencing the Metalsmith root directory**.
+Pass the options to `Metalsmith#use`. The options object is in the format `{ 'metadata.key': 'path/to/(file.ext|dir)' }`. Relative file/directory paths are resolved to `metalsmith.directory()`. Directory option keys will include direct children of the directory, see [Mapping nested metadata directories](#mapping-nested-metadata-directories) for creating nested directory structures.
 
 ```js
-const metadata = require('@metalsmith/metadata');
+const Metalsmith = require('metalsmith')
+const metadata = require('@metalsmith/metadata')
 
-metalsmith.use(
-  metadata({
-    jsonFile: 'src/data/a-json-file.json',
-    yamlFile: 'some-directory/a-yaml-file.yaml',
-    aDirectory: 'some-directory/a-directory'
+Metalsmith(__dirname)
+  .use(
+    metadata({
+      // in-source JSON file
+      jsonFile: 'src/data/a-json-file.json',
+      // out-of-source YAML file at nested keypath
+      'nested.yamlFile': 'some-directory/a-yaml-file.yaml',
+      // out-of-source directory
+      aDirectory: 'some-directory/a-directory'
+    })
+  )
+  .build((err) => {
+    console.log(metalsmith.metadata())
+    // logs { jsonFile: {...}, nested: { yamlFile: {...}}, aDirectory: {...} }
   })
-);
 ```
+Files inside `metalsmith.source()` will be considered metadata and thus removed from the build output.
 
-> **Note**: In the example above the first option `jsonFile` is located in the Metalsmith source directory. The following two options are located in some directory in the Metalsmith root.
+### Plugin order
 
-## Examples
+Typically, you want to use this plugin somewhere at the start of the chain, before any rendering plugins run, like [@metalsmith/layouts](https://github.com/metalsmith/layouts) or [@metalsmith/in-place](https://github.com/metalsmith/in-place).
 
-### a-json-file.json
+### Merging metadata files into objects
 
-```
-[
-  {
-    "title": "Nibh Justo Sit Dolor"
-  },
-  {
-    "title": "Venenatis Consectetur"
-  },
-  {
-    "title": "Tortor Mattis Amet Ullamcorper"
+You can merge metadata files into objects by making the root of the data file an object. For example, given the following 2 files:
+
+<table>
+  <tr><th><code>src/themes/red.json</code></th><th><code>src/themes/blue.json</code></th></tr>
+  <tr>
+    <td>
+      <pre>{
+  "red": {
+    "primary-color": "#FF0000"
   }
-]
-```
+}</pre>
+    </td>
+    <td>
+      <pre>{
+  "blue": {
+    "primary-color": "#00FF00"
+  }
+}</pre>
+    </td>
+  </tr>
+</table>
 
-will be available in the metadata like this:
+with a usage like `metalsmith.use(metadata({ themes: 'src/themes' }))`, `metalsmith.metadata().themes` will be `{ red: {"primary-color": #00FF00"}, blue: {"primary-color": "#00FF00"}}`.
+
+### Merging metadata files into arrays
+
+You can merge metadata files into an array by making the root of the data file an array. For example, given the following 2 files:
+
+<table>
+  <tr><th><code>src/themes/red.json</code></th><th><code>src/themes/blue.json</code></th></tr>
+  <tr>
+    <td>
+      <pre>[
+  {
+    "primary-color": "#FF0000"
+  }
+]</pre>
+    </td>
+    <td>
+      <pre>[
+  {
+    "primary-color": "#00FF00"
+  }
+]</pre>
+    </td>
+  </tr>
+</table>
+
+with a usage like `metalsmith.use(metadata({ themes: 'src/themes' }))`, `metalsmith.metadata().themes` will be `[{"primary-color": #00FF00"}, {"primary-color": "#00FF00"}]`.
+
+### Mapping nested metadata directories
+
+You can map nested metadata directories by specifying multiple options:
 
 ```js
-jsonFile: [
-  { title: 'Nibh Justo Sit Dolor' },
-  { title: 'Venenatis Consectetur' },
-  { title: 'Tortor Mattis Amet Ullamcorper' }
-];
+metalsmith.use(metadata({
+  'config': 'src/config',
+  'config.theme': 'src/config/theme',
+  'config.theme.summer': 'src/config/theme/summer',
+  'config.constants': 'src/config/constants.yaml'
+}))
 ```
 
-### a-yaml-file.yaml (or a-yaml-file.yml)
-
-```yaml
-title: 'Local YAML test file'
-Dolorfusce:
-  Curabitur: 'blandit tempus'
-  Porttitor: 'More Voodoo'
-  Purus:
-    - 'Euismod'
-    - 'Quam Ipsum'
-```
-
-will be available in the metadata like this:
+The resulting metadata will have a structure like: 
 
 ```js
-yamlTest: {
-  title: 'Local YAML test file',
-  Dolorfusce: {
-    Curabitur: 'blandit tempus',
-    Porttitor: 'More Voodoo',
-    Purus: ["Euismod", "Quam Ipsum"]
+{
+  ...otherMetadata,
+  config: {
+    ...metadata_from_config_dir
+    theme: {
+      ...metadata_from_config_theme_dir
+      summer: { ...metadata_from_config_theme_summer_dir }
+    }
+  },
+  constants: {
+    ...metadata_from_config_constants_file
   }
 }
-```
-
-### a-toml-file.toml
-
-```toml
-# This is a TOML document
-
-title = "Local TOML test file"
-
-[owner]
-name = "Tom Preston-Werner"
-dob = 1979-05-27T07:32:00-08:00
-
-[database]
-enabled = true
-ports = [ 8000, 8001, 8002 ]
-data = [ ["delta", "phi"], [3.14] ]
-temp_targets = { cpu = 79.5, case = 72.0 }
-
-[servers]
-
-[servers.alpha]
-ip = "10.0.0.1"
-role = "frontend"
-
-[servers.beta]
-ip = "10.0.0.2"
-role = "backend"
-
-```
-
-will be available in the metadata like this:
-
-```js
-tomlTest: {
-  title: 'Local TOML test file',
-  owner: { name: 'Tom Preston-Werner', dob: '1979-05-27T15:32:00.000Z' },
-  database: {
-    enabled: true,
-    ports: [8000,8001,8002],
-    data: [["delta","phi"],[3.14]],
-    temp_targets: {"cpu":79.5,"case":72}
-  },
-  servers: { alpha: {"ip":"10.0.0.1","role":"frontend"}, beta: {"ip":"10.0.0.2","role":"backend"}}
-}
-```
-
-### Directory with files
-
-```
-a-directory
-  - file1.json
-  - file2.json
-  - file3.json
-```
-
-### file1.json
-
-```
-{
-    "title": "Fringilla Etiam Sollicitudin"
-}
-```
-
-### file2.json
-
-```
-{
-    "title": "Pharetra Egestas Mollis"
-}
-```
-
-### file3.json
-
-```
-{
-    "title": "Sem Venenatis Tortor"
-}
-```
-
-will be available in the metadata like this:
-
-```js
-aDirectory: [
-    { title: 'Fringilla Etiam Sollicitudin' },
-    { title: 'Pharetra Egestas Mollis' },
-    { title: 'Sem Venenatis Tortor' }
-  ],
 ```
 
 ## Debug
@@ -211,9 +164,9 @@ To use this plugin with the Metalsmith CLI,add the `@metalsmith/metadata` key to
 {
   "plugins": {
     "@metalsmith/metadata": {
-      "authors": "path/to/authors.json",
-      "categories": "path/to/categories.yaml",
-      "customers": "path/to/directory/with/customer/files"
+      "authors": "src/authors.json",
+      "categories": "src/categories.yaml",
+      "customers": "external_data/customers"
     }
   }
 }
@@ -221,12 +174,12 @@ To use this plugin with the Metalsmith CLI,add the `@metalsmith/metadata` key to
 
 ## License
 
-MIT
+[MIT][license-url]
 
 [npm-badge]: https://img.shields.io/npm/v/@metalsmith/metadata.svg
 [npm-url]: https://www.npmjs.com/package/@metalsmith/metadata
-[ci-badge]: https://app.travis-ci.com/metalsmith/metadata.svg?branch=master
-[ci-url]: https://app.travis-ci.com/github/metalsmith/metadata
+[ci-badge]: https://github.com/metalsmith/metalsmith/actions/workflows/test.yml/badge.svg
+[ci-url]: https://github.com/metalsmith/metalsmith/actions/workflows/test.yml
 [metalsmith-badge]: https://img.shields.io/badge/metalsmith-core_plugin-green.svg?longCache=true
 [metalsmith-url]: https://metalsmith.io
 [codecov-badge]: https://img.shields.io/coveralls/github/metalsmith/metadata
