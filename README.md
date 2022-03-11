@@ -12,7 +12,6 @@ A metalsmith plugin to load global metadata from files and directories.
 - Supports JSON, YAML and TOML files. [TOML parser](https://www.npmjs.com/package/toml) needs to be installed separately.
 - Supports dot-notated metadata keypath targets as option keys, eg `{'config.nav': 'src/config/nav.yml'}`
 
-
 ## Installation
 
 NPM:
@@ -51,6 +50,7 @@ Metalsmith(__dirname)
     // logs { jsonFile: {...}, nested: { yamlFile: {...}}, aDirectory: {...} }
   })
 ```
+
 Files inside `metalsmith.source()` will be considered metadata and thus removed from the build output.
 
 ### Plugin order
@@ -114,15 +114,17 @@ with a usage like `metalsmith.use(metadata({ themes: 'src/themes' }))`, `metalsm
 You can map nested metadata directories by specifying multiple options:
 
 ```js
-metalsmith.use(metadata({
-  'config': 'src/config',
-  'config.theme': 'src/config/theme',
-  'config.theme.summer': 'src/config/theme/summer',
-  'config.constants': 'src/config/constants.yaml'
-}))
+metalsmith.use(
+  metadata({
+    config: 'src/config',
+    'config.theme': 'src/config/theme',
+    'config.theme.summer': 'src/config/theme/summer',
+    'config.constants': 'src/config/constants.yaml'
+  })
+)
 ```
 
-The resulting metadata will have a structure like: 
+The resulting metadata will have a structure like:
 
 ```js
 {

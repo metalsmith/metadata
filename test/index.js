@@ -33,7 +33,7 @@ describe('@metalsmith/metadata', function () {
     })
   })
 
-  it('should resolve relative paths to metalsmith.directory()', function(done) {
+  it('should resolve relative paths to metalsmith.directory()', function (done) {
     const m = Metalsmith('test/fixtures/yaml').use(metadata({ file: './src/data.yaml' }))
     m.build(function (err) {
       if (err) return done(err)
@@ -42,7 +42,7 @@ describe('@metalsmith/metadata', function () {
     })
   })
 
-  it('should resolve absolute paths to metalsmith.directory()', function(done) {
+  it('should resolve absolute paths to metalsmith.directory()', function (done) {
     const m = Metalsmith('test/fixtures/yaml')
     m.use(metadata({ file: m.directory() + '/src/data.yaml' }))
     m.build(function (err) {
@@ -84,9 +84,7 @@ describe('@metalsmith/metadata', function () {
   })
 
   it('should allow merging files into an array', function (done) {
-    const m = Metalsmith('test/fixtures/array-merge').use(
-      metadata({ arr: 'src/metadata' })
-    )
+    const m = Metalsmith('test/fixtures/array-merge').use(metadata({ arr: 'src/metadata' }))
     m.build(function (err) {
       if (err) return done(err)
       assert.deepStrictEqual(m.metadata().arr, [{ id: 1 }, { id: 2 }])
@@ -95,12 +93,16 @@ describe('@metalsmith/metadata', function () {
   })
 
   it('should allow merging files into a nested object', function (done) {
-    const m = Metalsmith('test/fixtures/object-merge').use(
-      metadata({ config: 'src/metadata' })
-    )
+    const m = Metalsmith('test/fixtures/object-merge').use(metadata({ config: 'src/metadata' }))
     m.build(function (err) {
       if (err) return done(err)
-      assert.deepStrictEqual(m.metadata().config, { metatags: [{"name": "description", "value": "Hello world"}], navitems: [{ "uri": "/", "label": "Home" },{ "uri": "/about", "label": "About" }] })
+      assert.deepStrictEqual(m.metadata().config, {
+        metatags: [{ name: 'description', value: 'Hello world' }],
+        navitems: [
+          { uri: '/', label: 'Home' },
+          { uri: '/about', label: 'About' }
+        ]
+      })
       done()
     })
   })
@@ -111,7 +113,7 @@ describe('@metalsmith/metadata', function () {
     )
     m.build(function (err) {
       if (err) return done(err)
-      assert.deepStrictEqual(m.metadata().config, { metadata: {string: 'string'}})
+      assert.deepStrictEqual(m.metadata().config, { metadata: { string: 'string' } })
       done()
     })
   })
@@ -125,16 +127,16 @@ describe('@metalsmith/metadata', function () {
     )
     m.build(function (err) {
       if (err) return done(err)
-      assert.deepStrictEqual(m.metadata().config, { metadata: { extra: { json: 'string', yaml: { bool: true }}}})
+      assert.deepStrictEqual(m.metadata().config, {
+        metadata: { extra: { json: 'string', yaml: { bool: true } } }
+      })
       done()
     })
   })
 
-  describe('External metadata', function() {
+  describe('External metadata', function () {
     it('should add an external file to metadata', function (done) {
-      const m = Metalsmith('test/fixtures/external-file').use(
-        metadata({ data: 'data/test.json' })
-      )
+      const m = Metalsmith('test/fixtures/external-file').use(metadata({ data: 'data/test.json' }))
       m.build(function (err) {
         if (err) return done(err)
         assert.deepStrictEqual(m.metadata().data, { json: 'string' })
@@ -143,12 +145,10 @@ describe('@metalsmith/metadata', function () {
     })
 
     it('should add all external files in a folder', function (done) {
-      const m = Metalsmith('test/fixtures/external-folder').use(
-        metadata({ data: 'data' })
-      )
+      const m = Metalsmith('test/fixtures/external-folder').use(metadata({ data: 'data' }))
       m.build(function (err) {
         if (err) return done(err)
-        assert.deepStrictEqual(m.metadata().data, { json: 'string', yaml: { bool: true }})
+        assert.deepStrictEqual(m.metadata().data, { json: 'string', yaml: { bool: true } })
         done()
       })
     })
