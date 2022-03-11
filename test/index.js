@@ -25,6 +25,8 @@ describe('@metalsmith/metadata', function () {
   })
 
   it('should parse TOML', function (done) {
+    // run this test locally after running "npm i toml"
+    it.skip()
     const m = Metalsmith('test/fixtures/toml').use(metadata({ file: 'src/data.toml' }))
     m.build(function (err) {
       if (err) return done(err)
