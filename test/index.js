@@ -4,8 +4,18 @@ const assert = require('assert')
 const { it, describe } = require('mocha')
 const Metalsmith = require('metalsmith')
 const metadata = require('../lib')
+const { name } = require('../package.json')
 
 describe('@metalsmith/metadata', function () {
+  it('should export a named plugin function matching package.json name', function () {
+    const namechars = name.split('/')[1]
+    const camelCased = namechars.split('').reduce((str, char, i) => {
+      str += namechars[i - 1] === '-' ? char.toUpperCase() : char === '-' ? '' : char
+      return str
+    }, '')
+    assert.deepStrictEqual(metadata().name, camelCased)
+  })
+
   it('should parse JSON', function (done) {
     const m = Metalsmith('test/fixtures/json').use(metadata({ file: 'src/data.json' }))
     m.build(function (err) {
@@ -25,8 +35,8 @@ describe('@metalsmith/metadata', function () {
   })
 
   it('should parse TOML', function (done) {
-    // run this test locally after running "npm i toml"
-    it.skip()
+    // run this test locally after running "npm i toml" & removing this.skip
+    this.skip()
     const m = Metalsmith('test/fixtures/toml').use(metadata({ file: 'src/data.toml' }))
     m.build(function (err) {
       if (err) return done(err)
@@ -162,14 +172,14 @@ describe('@metalsmith/metadata', function () {
         .use(metadata({ file: 'src/data.txt' }))
         .build(function (err) {
           assert(err)
-          assert(err.message.startsWith('unsupported data format'))
+          assert(err.message.startsWith('Unsupported data format'))
           done()
         })
     })
 
     it('should error when TOML is not installed', function (done) {
-      // run this test locally by removing it.skip & running "npm remove toml"
-      it.skip()
+      // run this test locally by removing this.skip & running "npm remove toml"
+      this.skip()
       const Metalsmith = require('metalsmith')
       Metalsmith('test/fixtures/toml')
         .use(metadata({ file: 'src/data.toml' }))
