@@ -1,20 +1,40 @@
 {
   "name": "@metalsmith/metadata",
+  "version": "0.0.1",
   "description": "A metalsmith plugin to load global metadata from files and directories",
-  "homepage": "https://github.com/metalsmith/metadata#readme",
   "keywords": [
     "metalsmith-plugin",
     "metalsmith",
     "metadata",
+    "yaml",
+    "json",
+    "toml",
     "static-site"
   ],
+  "homepage": "https://github.com/metalsmith/metadata#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/metalsmith/metadata.git"
   },
-  "version": "0.0.1",
   "license": "MIT",
   "main": "lib/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "files": [
+    "lib/index.js"
+  ],
+  "scripts": {
+    "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
+    "coverage": "nyc report --reporter=text-lcov > ./coverage.info",
+    "format": "prettier --write \"**/*.{yml,md,js,json}\"",
+    "format:check": "prettier --list-different \"**/*.{yml,md,js,json}\"",
+    "lint": "eslint --cache --fix .",
+    "lint:check": "eslint --cache --fix-dry-run .",
+    "release": "release-it .",
+    "test": "nyc mocha -t 5000"
+  },
   "dependencies": {
     "debug": "^4.3.3",
     "deepmerge": "^4.2.2",
@@ -40,16 +60,6 @@
     "toml": {
       "optional": true
     }
-  },
-  "scripts": {
-    "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
-    "coverage": "nyc report --reporter=text-lcov > ./coverage.info",
-    "format": "prettier --write \"**/*.{yml,md,js,json}\"",
-    "format:check": "prettier --list-different \"**/*.{yml,md,js,json}\"",
-    "lint": "eslint --cache --fix .",
-    "lint:check": "eslint --cache --fix-dry-run .",
-    "release": "release-it .",
-    "test": "nyc mocha -t 5000"
   },
   "engines": {
     "node": ">=12"
