@@ -17,7 +17,14 @@
     "url": "git+https://github.com/metalsmith/metadata.git"
   },
   "license": "MIT",
-  "main": "lib/index.js",
+  "source": "src/index.js",
+  "main": "lib/index.cjs",
+  "module": "lib/index.js",
+  "type": "module",
+  "exports": {
+    "import": "./lib/index.js",
+    "require": "./lib/index.cjs"
+  },
   "directories": {
     "lib": "lib",
     "test": "test"
@@ -30,9 +37,11 @@
     "coverage": "nyc report --reporter=text-lcov > ./coverage.info",
     "format": "prettier --write \"**/*.{yml,md,js,json}\"",
     "format:check": "prettier --list-different \"**/*.{yml,md,js,json}\"",
-    "lint": "eslint --cache --fix .",
-    "lint:check": "eslint --cache --fix-dry-run .",
+    "lint": "eslint --cache --fix \"{src,test}/**/*.js\"",
+    "lint:check": "eslint --cache --fix-dry-run  \"{src,test}/**/*.js\"",
     "release": "release-it .",
+    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
+    "pretest": "npm run build",
     "test": "nyc mocha -t 5000"
   },
   "dependencies": {
@@ -47,6 +56,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "metalsmith": "^2.5.0",
+    "microbundle": "^0.15.0",
     "mocha": "^9.2.2",
     "nyc": "^15.1.0",
     "prettier": "^2.7.1",
@@ -62,7 +72,7 @@
     }
   },
   "engines": {
-    "node": ">=12"
+    "node": ">=12.2.0"
   },
   "publishConfig": {
     "access": "public"

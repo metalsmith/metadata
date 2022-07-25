@@ -1,16 +1,21 @@
-'use strict'
+import { promises } from 'fs'
+import merge from 'deepmerge'
+import createDebug from 'debug'
+import yaml from 'js-yaml'
+import { relative, extname, basename, join } from 'path'
+import module, { createRequire } from 'module'
 
-const debug = require('debug')('@metalsmith/metadata')
-const merge = require('deepmerge')
-const {
-  promises: { readdir, readFile }
-} = require('fs')
-const { relative, extname, basename, join } = require('path')
-const yaml = require('js-yaml')
+const debug = createDebug('@metalsmith/metadata')
+
+const { readdir, readFile } = promises
 let toml
 
+// support for dynamic imports landed in Node 13.2.0, and was available with --experimental-modules flag in 12.0.0
+// ideally all the loaders should be refactored to be async, and loaded only when the plugin runs
+const req = module.require || createRequire(import.meta.url)
+
 try {
-  toml = require('toml').parse
+  toml = req('toml')
 } catch (err) {
   toml = () => {
     throw new Error('To use toml you must install it first, run "npm i toml"')
@@ -24,7 +29,7 @@ const parsers = {
   '.json': JSON.parse,
   '.yaml': yaml.load,
   '.yml': yaml.load,
-  '.toml': toml
+  '.toml': toml.parse
 }
 const extglob = `**/*{${Object.keys(parsers).join(',')}}`
 
@@ -216,4 +221,4 @@ function initMetadata(options = {}) {
   }
 }
 
-module.exports = initMetadata
+export default initMetadata

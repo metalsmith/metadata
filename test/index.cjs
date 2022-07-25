@@ -3,7 +3,7 @@
 const assert = require('assert')
 const { it, describe } = require('mocha')
 const Metalsmith = require('metalsmith')
-const metadata = require('../lib')
+const metadata = require('..')
 const { name } = require('../package.json')
 
 describe('@metalsmith/metadata', function () {
