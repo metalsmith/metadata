@@ -30,7 +30,8 @@
     "test": "test"
   },
   "files": [
-    "lib/index.js"
+    "lib/index.js",
+    "lib/index.cjs"
   ],
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
@@ -40,12 +41,12 @@
     "lint": "eslint --cache --fix \"{src,test}/**/*.js\"",
     "lint:check": "eslint --cache --fix-dry-run  \"{src,test}/**/*.js\"",
     "release": "release-it .",
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
+    "build": "microbundle --target node --no-sourcemap -f cjs,esm --strict",
     "pretest": "npm run build",
     "test": "nyc mocha -t 5000"
   },
   "dependencies": {
-    "debug": "^4.3.3",
+    "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0"
   },
