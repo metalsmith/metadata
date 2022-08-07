@@ -31,7 +31,8 @@
   },
   "files": [
     "lib/index.js",
-    "lib/index.cjs"
+    "lib/index.cjs",
+    "lib/index.d.ts"
   ],
   "types": "lib/index.d.ts",
   "scripts": {

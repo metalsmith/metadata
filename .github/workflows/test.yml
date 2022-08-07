@@ -3,7 +3,7 @@ on:
   push:
     branches: ['**']
   pull_request:
-    branches: ['master']
+    branches: ['main']
 
 jobs:
   pre-test:
@@ -19,13 +19,13 @@ jobs:
       - run: npm run lint:check
 
   branch-test:
-    if: github.ref_name != 'master' && success()
+    if: github.ref_name != 'main' && success()
     needs: pre-test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: ['12.0']
+        node: ['12.2.0']
     name: Testing Node ${{ matrix.node }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -37,13 +37,13 @@ jobs:
       - run: npm test
 
   test:
-    if: github.ref_name == 'master' && success()
+    if: github.ref_name == 'main' && success()
     needs: pre-test
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: ['ubuntu-latest', 'windows-latest']
-        node: ['12.0', '14.0', '16.0']
+        node: ['12.2.0', '14.0', '16.0']
     name: Testing Node ${{ matrix.node }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
