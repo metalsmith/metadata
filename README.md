@@ -31,8 +31,10 @@ yarn add @metalsmith/metadata
 Pass the options to `Metalsmith#use`. The options object is in the format `{ 'metadata.key': 'path/to/(file.ext|dir)' }`. Relative file/directory paths are resolved to `metalsmith.directory()`. Directory option keys will include direct children of the directory, see [Mapping nested metadata directories](#mapping-nested-metadata-directories) for creating nested directory structures.
 
 ```js
-const Metalsmith = require('metalsmith')
-const metadata = require('@metalsmith/metadata')
+import Metalsmith from 'metalsmith'
+import metadata from '@metalsmith/metadata'
+
+const __dirname = dirname(new URL(import.meta.url).pathname)
 
 Metalsmith(__dirname)
   .use(

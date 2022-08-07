@@ -43,7 +43,7 @@
     "lint": "eslint --cache --fix \"{src,test}/**/*.js\"",
     "lint:check": "eslint --cache --fix-dry-run  \"{src,test}/**/*.js\"",
     "release": "release-it .",
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm --strict",
+    "build": "microbundle --target node --no-sourcemap -f cjs,esm --strict --generateTypes=false",
     "pretest": "npm run build",
     "test": "nyc mocha -t 5000"
   },
