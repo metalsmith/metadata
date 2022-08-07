@@ -8,7 +8,7 @@ npm-debug.log*
 .eslintcache
 
 # build output
-lib
+lib/index.*
 
 # tests
 **/build

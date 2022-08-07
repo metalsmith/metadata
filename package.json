@@ -33,6 +33,7 @@
     "lib/index.js",
     "lib/index.cjs"
   ],
+  "types": "lib/index.d.ts",
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
     "coverage": "nyc report --reporter=text-lcov > ./coverage.info",
