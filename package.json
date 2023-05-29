@@ -1,6 +1,6 @@
 {
   "name": "@metalsmith/metadata",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A metalsmith plugin to load global metadata from files and directories",
   "keywords": [
     "metalsmith-plugin",
