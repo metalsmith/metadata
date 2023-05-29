@@ -210,7 +210,14 @@ function initMetadata(options = {}) {
             current = current[k]
           }
           debug('Adding metadata from file "%s" at key "%s": %O', path, key, parsed)
-          Object.assign(metadata, merge(metadata, newMeta))
+          Object.assign(
+            metadata,
+            merge(metadata, newMeta, {
+              arrayMerge(target, src) {
+                return target.concat(src)
+              }
+            })
+          )
           if (delete files[path]) {
             debug('Removed metadata file at "%s"', path)
           }
