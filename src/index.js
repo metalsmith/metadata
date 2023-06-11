@@ -62,7 +62,7 @@ function normalizeOptions(options) {
  * @param {Options} options
  * @returns {import('metalsmith').Plugin}
  */
-function initMetadata(options = {}) {
+function metadata(options = {}) {
   options = normalizeOptions(options)
   if (Object.keys(options).length === 0) {
     return function metadata(files, metalsmith, done) {
@@ -238,4 +238,4 @@ function initMetadata(options = {}) {
   }
 }
 
-export default initMetadata
+export default metadata

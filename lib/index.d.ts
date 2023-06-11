@@ -1,6 +1,6 @@
 import Metalsmith from "metalsmith";
 
-export default initMetadata;
+export default metadata;
 export type Options = {
   [key: string]: string;
 };
@@ -16,7 +16,5 @@ export type Options = {
  * // target a keypath
  * metalsmith.use(metadata({ 'config.nav.items': 'navitems.yaml' }))
  * ```
- * @param {Options} options
- * @returns {import('metalsmith').Plugin}
  */
-declare function initMetadata(options?: Options): Metalsmith.Plugin;
+declare function metadata(options?: Options): Metalsmith.Plugin;
