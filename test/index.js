@@ -96,8 +96,8 @@ describe('@metalsmith/metadata', function () {
     m.build(function (err) {
       if (err) return done(err)
       try {
-      assert.deepStrictEqual(m.metadata().file, { string: 'string' })
-      done()
+        assert.deepStrictEqual(m.metadata().file, { string: 'string' })
+        done()
       } catch (err) {
         done(err)
       }
@@ -178,9 +178,7 @@ describe('@metalsmith/metadata', function () {
 
     m.metadata({
       config: {
-        navitems: [
-          { uri: '/products', label: 'products' }
-        ]
+        navitems: [{ uri: '/products', label: 'products' }]
       }
     })
     m.use(plugin)
@@ -201,16 +199,14 @@ describe('@metalsmith/metadata', function () {
       .catch(done)
   })
 
-  it('should handle single runs on different Metalsmith instances\' metadata', function (done) {
+  it("should handle single runs on different Metalsmith instances' metadata", function (done) {
     const plugin = metadata({ config: 'src/metadata' })
 
     function singleRun() {
       const m = Metalsmith('test/fixtures/object-merge')
       m.metadata({
         config: {
-          navitems: [
-            { uri: '/products', label: 'products' }
-          ]
+          navitems: [{ uri: '/products', label: 'products' }]
         }
       })
       m.use(plugin)

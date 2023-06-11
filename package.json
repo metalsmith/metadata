@@ -30,9 +30,7 @@
     "test": "test"
   },
   "files": [
-    "lib/index.js",
-    "lib/index.cjs",
-    "lib/index.d.ts"
+    "lib"
   ],
   "types": "lib/index.d.ts",
   "scripts": {
@@ -43,7 +41,7 @@
     "lint": "eslint --cache --fix \"{src,test}/**/*.js\"",
     "lint:check": "eslint --cache --fix-dry-run  \"{src,test}/**/*.js\"",
     "release": "release-it .",
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm --strict --generateTypes=false",
+    "build": "microbundle --target node -f cjs,esm --strict --generateTypes=false",
     "test": "c8 mocha -t 5000"
   },
   "dependencies": {
