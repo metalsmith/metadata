@@ -1,11 +1,8 @@
 import { promises } from 'fs'
 import merge from 'deepmerge'
-import createDebug from 'debug'
 import yaml from 'js-yaml'
 import { relative, extname, basename, join } from 'path'
 import module, { createRequire } from 'module'
-
-const debug = createDebug('@metalsmith/metadata')
 
 const { readdir, readFile } = promises
 let toml
@@ -68,15 +65,20 @@ function normalizeOptions(options) {
 function initMetadata(options = {}) {
   options = normalizeOptions(options)
   if (Object.keys(options).length === 0) {
-    debug('Found no metadata options')
-    return function metadata() {}
+    return function metadata(files, metalsmith, done) {
+      const debug = metalsmith.debug('@metalsmith/metadata')
+      debug.warn('No metadata files to process, skipping.')
+      done()
+    }
   }
-  debug('Running with options: %O', options)
+
   let meta
 
   return function metadata(files, metalsmith, done) {
     const filePromises = []
     const dirPromises = []
+    const debug = metalsmith.debug('@metalsmith/metadata')
+    debug('Running with options: %O', options)
 
     // the same metalsmith instance always returns the same metadata object,
     // if it is metalsmith.use'd twice, or the pipeline is rerun with metalsmith.watch

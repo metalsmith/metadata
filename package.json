@@ -48,7 +48,6 @@
     "test": "nyc mocha -t 5000"
   },
   "dependencies": {
-    "debug": "^4.3.4",
     "deepmerge": "^4.2.2",
     "js-yaml": "^4.1.0"
   },
@@ -66,7 +65,7 @@
     "release-it": "^15.1.4"
   },
   "peerDependencies": {
-    "metalsmith": "^2.4.1",
+    "metalsmith": "^2.5.0",
     "toml": "^3.0.0"
   },
   "peerDependenciesMeta": {
