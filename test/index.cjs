@@ -1,7 +1,6 @@
-/* eslint-disable node/no-unpublished-require */
+/* eslint-env node, mocha */
 
 const assert = require('assert')
-const { it, describe } = require('mocha')
 const Metalsmith = require('metalsmith')
 const metadata = require('..')
 const { name } = require('../package.json')
