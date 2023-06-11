@@ -47,7 +47,7 @@
     "test": "c8 mocha -t 5000"
   },
   "dependencies": {
-    "deepmerge": "^4.2.2",
+    "deepmerge": "^4.3.1",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
