@@ -1,9 +1,14 @@
 /* eslint-env node, mocha */
 
-const assert = require('assert')
-const Metalsmith = require('metalsmith')
-const metadata = require('..')
-const { name } = require('../package.json')
+import assert from 'node:assert'
+import { resolve, dirname } from 'node:path'
+import { readFileSync } from 'node:fs'
+import { fileURLToPath } from 'node:url'
+import Metalsmith from 'metalsmith'
+import metadata from '../src/index.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const { name } = JSON.parse(readFileSync(resolve(__dirname, '../package.json'), 'utf-8'))
 
 describe('@metalsmith/metadata', function () {
   it('should export a named plugin function matching package.json name', function () {
@@ -270,16 +275,17 @@ describe('Error handling', function () {
   it('should error when TOML is not installed', function (done) {
     // run this test locally by removing this.skip & running "npm remove toml"
     this.skip()
-    const Metalsmith = require('metalsmith')
-    Metalsmith('test/fixtures/toml')
-      .env('DEBUG', process.env.DEBUG)
-      .use(metadata({ file: 'src/data.toml' }))
-      .build(function (err) {
-        if (!err) done(new Error('No error was thrown'))
-        assert(err)
-        assert(err.message.startsWith('To use toml you must install it first'))
-        done()
-      })
+    const Metalsmith = import('metalsmith').then(() => {
+      Metalsmith('test/fixtures/toml')
+        .env('DEBUG', process.env.DEBUG)
+        .use(metadata({ file: 'src/data.toml' }))
+        .build(function (err) {
+          if (!err) done(new Error('No error was thrown'))
+          assert(err)
+          assert(err.message.startsWith('To use toml you must install it first'))
+          done()
+        })
+    })
   })
 
   it('should error for malformed data', function (done) {
