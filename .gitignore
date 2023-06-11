@@ -13,7 +13,7 @@ lib/index.*
 # tests
 **/build
 coverage.info
-.nyc_output
+coverage
 
 # other
 .DS_Store

@@ -37,15 +37,14 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "changelog": "auto-changelog -u date --commit-limit false --ignore-commit-pattern '^((dev|chore|ci):|Release)'",
-    "coverage": "nyc report --reporter=text-lcov > ./coverage.info",
+    "coverage": "npm test && c8 report --reporter=text-lcov > ./coverage.info",
     "format": "prettier --write \"**/*.{yml,md,js,json}\"",
     "format:check": "prettier --list-different \"**/*.{yml,md,js,json}\"",
     "lint": "eslint --cache --fix \"{src,test}/**/*.js\"",
     "lint:check": "eslint --cache --fix-dry-run  \"{src,test}/**/*.js\"",
     "release": "release-it .",
     "build": "microbundle --target node --no-sourcemap -f cjs,esm --strict --generateTypes=false",
-    "pretest": "npm run build",
-    "test": "nyc mocha -t 5000"
+    "test": "c8 mocha -t 5000"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
@@ -53,6 +52,7 @@
   },
   "devDependencies": {
     "auto-changelog": "^2.3.0",
+    "c8": "^7.14.0",
     "eslint": "^8.20.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
@@ -60,7 +60,6 @@
     "metalsmith": "^2.5.0",
     "microbundle": "^0.15.0",
     "mocha": "^9.2.2",
-    "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "release-it": "^15.1.4"
   },
