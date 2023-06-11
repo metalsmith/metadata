@@ -72,10 +72,20 @@ function initMetadata(options = {}) {
     return function metadata() {}
   }
   debug('Running with options: %O', options)
+  let meta
 
   return function metadata(files, metalsmith, done) {
     const filePromises = []
     const dirPromises = []
+
+    // the same metalsmith instance always returns the same metadata object,
+    // if it is metalsmith.use'd twice, or the pipeline is rerun with metalsmith.watch
+    // the data has already been loaded successfully
+    if (meta === metalsmith.metadata()) {
+      debug('Detected repeat run, skipping.')
+      done()
+      return
+    }
 
     // get metalsmith source directory
     const relpath = (path, root) => relative(root || metalsmith.directory(), metalsmith.path(path))
@@ -187,7 +197,7 @@ function initMetadata(options = {}) {
         return Promise.all(filePromises)
       })
       .then((allFiles) => {
-        const metadata = metalsmith.metadata()
+        let newMetadata = {}
         allFiles.forEach(({ key, file, path }) => {
           let parsed
           try {
@@ -209,19 +219,17 @@ function initMetadata(options = {}) {
             current[k] = keypath.length ? {} : parsed
             current = current[k]
           }
+          newMetadata = merge(newMetadata, newMeta)
           debug('Adding metadata from file "%s" at key "%s": %O', path, key, parsed)
-          Object.assign(
-            metadata,
-            merge(metadata, newMeta, {
-              arrayMerge(target, src) {
-                return target.concat(src)
-              }
-            })
-          )
+
           if (delete files[path]) {
             debug('Removed metadata file at "%s"', path)
           }
         })
+
+        meta = metalsmith.metadata()
+        const merged = merge(meta, newMetadata)
+        metalsmith.metadata(merged)
         done()
       })
       .catch(done)

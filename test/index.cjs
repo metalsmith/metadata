@@ -146,79 +146,142 @@ describe('@metalsmith/metadata', function () {
     })
   })
 
-  describe('External metadata', function () {
-    it('should add an external file to metadata', function (done) {
-      const m = Metalsmith('test/fixtures/external-file').use(metadata({ data: 'data/test.json' }))
-      m.build(function (err) {
-        if (err) return done(err)
-        assert.deepStrictEqual(m.metadata().data, { json: 'string' })
-        done()
-      })
-    })
+  it('should handle repeat runs on the same Metalsmith metadata (no duplicates)', function (done) {
+    const m = Metalsmith('test/fixtures/object-merge')
+    const plugin = metadata({ config: 'src/metadata' })
 
-    it('should add all external files in a folder', function (done) {
-      const m = Metalsmith('test/fixtures/external-folder').use(metadata({ data: 'data' }))
-      m.build(function (err) {
-        if (err) return done(err)
-        assert.deepStrictEqual(m.metadata().data, { json: 'string', yaml: { bool: true } })
+    m.metadata({
+      config: {
+        navitems: [
+          { uri: '/products', label: 'products' }
+        ]
+      }
+    })
+    m.use(plugin)
+    m.env('DEBUG', '@metalsmith/metadata')
+    m.process()
+      .then(() => m.process())
+      .then(() => {
+        assert.deepStrictEqual(m.metadata().config, {
+          metatags: [{ name: 'description', value: 'Hello world' }],
+          navitems: [
+            { uri: '/products', label: 'products' },
+            { uri: '/', label: 'Home' },
+            { uri: '/about', label: 'About' }
+          ]
+        })
         done()
       })
+      .catch(done)
+  })
+
+  it('should handle single runs on different Metalsmith instances\' metadata', function (done) {
+    const plugin = metadata({ config: 'src/metadata' })
+
+    function singleRun() {
+      const m = Metalsmith('test/fixtures/object-merge')
+      m.metadata({
+        config: {
+          navitems: [
+            { uri: '/products', label: 'products' }
+          ]
+        }
+      })
+      m.use(plugin)
+      m.env('DEBUG', '@metalsmith/metadata')
+      return m.process().then(() => m.metadata())
+    }
+
+    Promise.all([singleRun(), singleRun()])
+      .then(([meta1, meta2]) => {
+        const expected = {
+          metatags: [{ name: 'description', value: 'Hello world' }],
+          navitems: [
+            { uri: '/products', label: 'products' },
+            { uri: '/', label: 'Home' },
+            { uri: '/about', label: 'About' }
+          ]
+        }
+        assert.deepStrictEqual(meta1.config, expected, 'meta1')
+        assert.deepStrictEqual(meta2.config, expected, 'meta2')
+        done()
+      })
+      .catch(done)
+  })
+})
+
+describe('External metadata', function () {
+  it('should add an external file to metadata', function (done) {
+    const m = Metalsmith('test/fixtures/external-file').use(metadata({ data: 'data/test.json' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().data, { json: 'string' })
+      done()
     })
   })
 
-  describe('Error handling', function () {
-    it('should error for unsupported extensions', function (done) {
-      Metalsmith('test/fixtures/unsupported-ext')
-        .use(metadata({ file: 'src/data.txt' }))
-        .build(function (err) {
-          assert(err)
-          assert(err.message.startsWith('Unsupported data format'))
-          done()
-        })
+  it('should add all external files in a folder', function (done) {
+    const m = Metalsmith('test/fixtures/external-folder').use(metadata({ data: 'data' }))
+    m.build(function (err) {
+      if (err) return done(err)
+      assert.deepStrictEqual(m.metadata().data, { json: 'string', yaml: { bool: true } })
+      done()
     })
+  })
+})
 
-    it('should error when TOML is not installed', function (done) {
-      // run this test locally by removing this.skip & running "npm remove toml"
-      this.skip()
-      const Metalsmith = require('metalsmith')
-      Metalsmith('test/fixtures/toml')
-        .use(metadata({ file: 'src/data.toml' }))
-        .build(function (err) {
-          if (!err) done(new Error('No error was thrown'))
-          assert(err)
-          assert(err.message.startsWith('To use toml you must install it first'))
-          done()
-        })
-    })
+describe('Error handling', function () {
+  it('should error for unsupported extensions', function (done) {
+    Metalsmith('test/fixtures/unsupported-ext')
+      .use(metadata({ file: 'src/data.txt' }))
+      .build(function (err) {
+        assert(err)
+        assert(err.message.startsWith('Unsupported data format'))
+        done()
+      })
+  })
 
-    it('should error for malformed data', function (done) {
-      Metalsmith('test/fixtures/malformed')
-        .use(metadata({ file: 'src/data.json' }))
-        .build(function (err) {
-          if (!err) done(new Error('No error was thrown'))
-          assert(err.message.startsWith('malformed data'))
-          done()
-        })
-    })
+  it('should error when TOML is not installed', function (done) {
+    // run this test locally by removing this.skip & running "npm remove toml"
+    this.skip()
+    const Metalsmith = require('metalsmith')
+    Metalsmith('test/fixtures/toml')
+      .use(metadata({ file: 'src/data.toml' }))
+      .build(function (err) {
+        if (!err) done(new Error('No error was thrown'))
+        assert(err)
+        assert(err.message.startsWith('To use toml you must install it first'))
+        done()
+      })
+  })
 
-    it('should error for single-file entries that are not found', function (done) {
-      Metalsmith('test/fixtures/incorrect-path')
-        .use(metadata({ file: 'src/data-incorrect.json' }))
-        .build(function (err) {
-          if (!err) done(new Error('No error was thrown'))
-          assert(err.message.startsWith('No matching file found for entry'))
-          done()
-        })
-    })
+  it('should error for malformed data', function (done) {
+    Metalsmith('test/fixtures/malformed')
+      .use(metadata({ file: 'src/data.json' }))
+      .build(function (err) {
+        if (!err) done(new Error('No error was thrown'))
+        assert(err.message.startsWith('malformed data'))
+        done()
+      })
+  })
 
-    it('should error for single-file entries that are not found (outside source dir)', function (done) {
-      Metalsmith('test/fixtures/incorrect-path')
-        .use(metadata({ file: 'data-incorrect.json' }))
-        .build(function (err) {
-          if (!err) done(new Error('No error was thrown'))
-          assert(err.message.startsWith('No matching file found for entry'))
-          done()
-        })
-    })
+  it('should error for single-file entries that are not found', function (done) {
+    Metalsmith('test/fixtures/incorrect-path')
+      .use(metadata({ file: 'src/data-incorrect.json' }))
+      .build(function (err) {
+        if (!err) done(new Error('No error was thrown'))
+        assert(err.message.startsWith('No matching file found for entry'))
+        done()
+      })
+  })
+
+  it('should error for single-file entries that are not found (outside source dir)', function (done) {
+    Metalsmith('test/fixtures/incorrect-path')
+      .use(metadata({ file: 'data-incorrect.json' }))
+      .build(function (err) {
+        if (!err) done(new Error('No error was thrown'))
+        assert(err.message.startsWith('No matching file found for entry'))
+        done()
+      })
   })
 })
