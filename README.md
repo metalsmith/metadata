@@ -148,16 +148,8 @@ The resulting metadata will have a structure like:
 
 To enable debug logs, set the `DEBUG` environment variable to `@metalsmith/metadata`:
 
-Linux/Mac:
-
-```bash
-DEBUG=@metalsmith/metadata
-```
-
-Windows:
-
-```batch
-set "DEBUG=@metalsmith/metadata"
+```js
+metalsmith.env('DEBUG', '@metalsmith/metadata*')
 ```
 
 ## CLI Usage
