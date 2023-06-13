@@ -1,7 +1,7 @@
 /* eslint-env node, mocha */
 
 import assert from 'node:assert'
-import { resolve, dirname } from 'node:path'
+import { resolve, dirname, join } from 'node:path'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import Metalsmith from 'metalsmith'
@@ -75,6 +75,33 @@ describe('@metalsmith/metadata', function () {
       assert.deepStrictEqual(m.metadata().file, { string: 'string' })
       done()
     })
+  })
+
+  it("should ignore metalsmith.ignore'd files", function (done) {
+    const m = Metalsmith('test/fixtures/ignored')
+    const initialMeta = { ignored: { loaded: false }, implicitly_ignored: { loaded: false } }
+
+    m.env('DEBUG', process.env.DEBUG)
+      .ignore('*.yaml')
+      .metadata(initialMeta)
+      .use(
+        metadata({
+          ignored: 'src/ignored.yaml'
+        })
+      )
+      .process((err) => {
+        try {
+          assert.deepStrictEqual(m.metadata(), initialMeta)
+          assert(err instanceof Error)
+          assert.strictEqual(
+            err.message,
+            `No matching file found for entry "${join('src', 'ignored.yaml')}"`
+          )
+          done()
+        } catch (err) {
+          done(err)
+        }
+      })
   })
 
   it('should parse a file even if the key exists if the file is in the bundle', function (done) {
@@ -182,7 +209,7 @@ describe('@metalsmith/metadata', function () {
       }
     })
     m.use(plugin)
-    m.env('DEBUG', '@metalsmith/metadata')
+    m.env('DEBUG', process.env.DEBUG)
     m.process()
       .then(() => m.process())
       .then(() => {
@@ -268,7 +295,7 @@ describe('Error handling', function () {
       })
   })
 
-  it('should error when TOML is not installed', function (done) {
+  it('should error when TOML is used but not installed', function (done) {
     // run this test locally by removing this.skip & running "npm remove toml"
     this.skip()
     const Metalsmith = import('metalsmith').then(() => {
